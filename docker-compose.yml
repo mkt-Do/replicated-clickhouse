@@ -1,0 +1,16 @@
+storage:
+  image: busybox
+  container_name: storage
+  volumes:
+    - ~/docker/clickhouse:/var/lib/clickhouse
+
+clickhouse-server:
+  image: yandex/clickhouse-server
+  container_name: clickhouse-server
+  ulimits:
+    nofile:
+      soft: 262144
+      hard: 262144
+  volumes_from: 
+    - storage
+
