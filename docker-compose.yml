@@ -1,16 +1,48 @@
-storage:
-  image: busybox
-  container_name: storage
-  volumes:
-    - ~/docker/clickhouse:/var/lib/clickhouse
-
-clickhouse-server:
-  image: yandex/clickhouse-server
-  container_name: clickhouse-server
-  ulimits:
-    nofile:
-      soft: 262144
-      hard: 262144
-  volumes_from: 
-    - storage
+version: "2"
+services:
+  zookeeper:
+    container_name: "zookeeper"
+    image: "zookeeper"
+    restart: always
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    volumes:
+      - "./zookeeper/volumes/data:/data"
+      - "./zookeeper/volumes/datalog:/datalog"
+    hostname: "zookeeper"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: "server.1=zookeeper:2888:3888"
+  clickhouse-1:
+    container_name: "clickhouse-1"
+    build:
+      context: .
+      dockerfile: "./clickhouse-1/Dockerfile"
+    depends_on:
+      - zookeeper
+    restart: always
+    ports:
+      - 8123:8123
+      - 9000:9000
+    volumes:
+      - "./clickhouse-1/config.xml:/etc/clickhouse-server/config.xml"
+      - "./clickhouse-1/volumes:/var/lib/clickhouse"
+    hostname: "clickhouse-1"
+  clickhouse-2:
+    container_name: "clickhouse-2"
+    build:
+      context: .
+      dockerfile: "./clickhouse-2/Dockerfile"
+    depends_on:
+      - zookeeper
+    restart: always
+    ports:
+      - 8124:8123
+      - 9001:9000
+    volumes:
+      - "./clickhouse-2/config.xml:/etc/clickhouse-server/config.xml"
+      - "./clickhouse-2/volumes:/var/lib/clickhouse"
+    hostname: "clickhouse-2"
 
