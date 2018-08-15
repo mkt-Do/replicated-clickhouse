@@ -15,11 +15,11 @@ services:
     environment:
       ZOO_MY_ID: 1
       ZOO_SERVERS: "server.1=zookeeper:2888:3888"
-  clickhouse-1:
-    container_name: "clickhouse-1"
+  clickhouse-master:
+    container_name: "clickhouse-master"
     build:
       context: .
-      dockerfile: "./clickhouse-1/Dockerfile"
+      dockerfile: "./common/Dockerfile"
     depends_on:
       - zookeeper
     restart: always
@@ -27,14 +27,15 @@ services:
       - 8123:8123
       - 9000:9000
     volumes:
-      - "./clickhouse-1/config.xml:/etc/clickhouse-server/config.xml"
-      - "./clickhouse-1/volumes:/var/lib/clickhouse"
-    hostname: "clickhouse-1"
-  clickhouse-2:
-    container_name: "clickhouse-2"
+      - "./common/config.xml:/etc/clickhouse-server/config.xml"
+      - "./clickhouse-master/conf.d:/etc/clickhouse-server/conf.d"
+      - "./clickhouse-master/volumes:/var/lib/clickhouse"
+    hostname: "clickhouse-master"
+  clickhouse-master-shard:
+    container_name: "clickhouse-master-shard"
     build:
       context: .
-      dockerfile: "./clickhouse-2/Dockerfile"
+      dockerfile: "./common/Dockerfile"
     depends_on:
       - zookeeper
     restart: always
@@ -42,7 +43,40 @@ services:
       - 8124:8123
       - 9001:9000
     volumes:
-      - "./clickhouse-2/config.xml:/etc/clickhouse-server/config.xml"
-      - "./clickhouse-2/volumes:/var/lib/clickhouse"
-    hostname: "clickhouse-2"
+      - "./common/config.xml:/etc/clickhouse-server/config.xml"
+      - "./clickhouse-master-shard/conf.d:/etc/clickhouse-server/conf.d"
+      - "./clickhouse-master-shard/volumes:/var/lib/clickhouse"
+    hostname: "clickhouse-master-shard"
+  clickhouse-replica:
+    container_name: "clickhouse-replica"
+    build:
+      context: .
+      dockerfile: "./common/Dockerfile"
+    depends_on:
+      - zookeeper
+    restart: always
+    ports:
+      - 8125:8123
+      - 9002:9000
+    volumes:
+      - "./common/config.xml:/etc/clickhouse-server/config.xml"
+      - "./clickhouse-replica/conf.d:/etc/clickhouse-server/conf.d"
+      - "./clickhouse-replica/volumes:/var/lib/clickhouse"
+    hostname: "clickhouse-replica"
+  clickhouse-replica-shard:
+    container_name: "clickhouse-replica-shard"
+    build:
+      context: .
+      dockerfile: "./common/Dockerfile"
+    depends_on:
+      - zookeeper
+    restart: always
+    ports:
+      - 8126:8123
+      - 9003:9000
+    volumes:
+      - "./common/config.xml:/etc/clickhouse-server/config.xml"
+      - "./clickhouse-replica-shard/conf.d:/etc/clickhouse-server/conf.d"
+      - "./clickhouse-replica-shard/volumes:/var/lib/clickhouse"
+    hostname: "clickhouse-replica-shard"
 

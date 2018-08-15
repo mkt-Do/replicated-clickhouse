@@ -1,0 +1,28 @@
+<yandex>
+  <remote_servers>
+    <cluster_01>
+      <shard>
+        <!-- Optional. Shard weight when writing data. Defalut: 1. -->
+        <weight>1</weight>
+        <internal_replication>true</internal_replication>
+        <replica>
+          <host>clickhouse-master</host>
+          <port>9000</port>
+          <user>default</user>
+          <password></password>
+        </replica>
+      </shard>
+      <shard>
+        <weight>1</weight>
+        <internal_replication>true</internal_replication>
+        <replica>
+          <host>clickhouse-master-shard</host>
+          <port>9000</port>
+          <user>default</user>
+          <password></password>
+        </replica>
+      </shard>
+    </cluster_01>
+  </remote_servers>
+</yandex>
+

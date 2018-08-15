@@ -1,3 +1,3 @@
 #!/bin/bash
-rm -rf ./clickhouse-1/volumes/* ./clickhouse-2/volumes/* ./zookeeper/volumes/data/* ./zookeeper/volumes/datalog/*
+rm -rf ./clickhouse-master/volumes/* ./clickhouse-master-shard/volumes/*  ./clickhouse-replica/volumes/* ./clickhouse-replica-shard/volumes/* ./zookeeper/volumes/data/* ./zookeeper/volumes/datalog/*
 
