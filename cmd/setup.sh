@@ -1,5 +1,9 @@
 #! /bin/bash
 
+SCRIPT_DIR=`dirname $0`
+
+cd $SCRIPT_DIR
+
 # delete old data
 bash clear.sh
 
@@ -7,8 +11,8 @@ bash clear.sh
 docker-compose up -d
 
 # create table
-ls | grep clickhouse | xargs -I% bash ./cmd/create.sh %
+ls ../ | grep clickhouse | xargs -I% bash create.sh %
 
 # insert data
-bash ./cmd/insert.sh
+bash insert.sh
 

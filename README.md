@@ -1,19 +1,25 @@
 # ClickHouse Replicated Server (With ZooKeeper)
 ## How To Use
+First, run container orchestration.
 ```
-docker-compose up -d
+bash cmd/setup.sh
 ```
-After containers are started, you execute the following command.
+This shell executes following processing.
+* delete old data
+* run containers (zookeeper x 1, clickhouse-server x 4)
+* create tables
+* insert data
+
+When you use clickhouse-client, you can execute following command.
 ```
-bash clickhouse-client.sh {clickhouse hostname} {option}
+bash cmd/clickhouse-client.sh {servername}
 ```
-{clickhouse hostname} is clickhouse hostname such as `clickhouse-1`. (written `docker-compose.yml`)  
-You can use {option} `--multiline`.
-### clear.sh
-This script is clear zookeeper data and clickhouse data.
-```
-bash clear.sh
-```
+Original servers are
+* clickhouse-master
+* clickhouse-master-shard
+* clickhouse-replica
+* clickhouse-replica-shard
+If you want to add server, you create directory with servername.
 
 ## Customization
 If you add zookeeper containers, you write docker-compose.yml and clickhouse-X/config.xml.  
@@ -41,18 +47,7 @@ If you add zookeeper containers, you write docker-compose.yml and clickhouse-X/c
       - "zookeeper-2"
 ...
 ```
-### clickhouse-X/config.xml
-```clickhouse-X/config.xml
-...
-    <zookeeper>
-      <node index="1">
-        <host>zookeeper-1</host>
-        <port>2181</port>
-      </node>
-      <node index="2">
-        <host>zookeeper-2</host>
-        <port>2182</port>
-      </node>
-    </zookeeper>
-...
-```
+
+## License
+WTFPL
+
