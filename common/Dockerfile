@@ -6,7 +6,7 @@ RUN set -x && \
     apt-get install -y apt-transport-https && \
     apt-get install -y software-properties-common && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv E0C56BD4 && \
-    apt-add-repository "deb http://repo.yandex.ru/clickhouse/xenial stable main" && \
+    apt-add-repository "deb http://repo.yandex.ru/clickhouse/deb/stable/ main/" && \
     apt-get update && \
     apt-get install clickhouse-server-common clickhouse-client -y
 
